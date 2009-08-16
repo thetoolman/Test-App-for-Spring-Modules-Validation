@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+
+
+    <bean id="configurationLoader" class="org.springmodules.validation.bean.conf.loader.annotation.AnnotationBeanValidationConfigurationLoader"/>  
+    
+    <bean id="validator" class="org.springmodules.validation.bean.BeanValidator">
+        <property name="configurationLoader" ref="configurationLoader"/>
+    </bean> 
+
+
+    <!-- Add additional controller beans here -->
+
+    <bean id="testController" class="nz.co.vero.test.TestController" >
+		<property name="commandClass"><value>nz.co.vero.test.bean.TestBean</value></property>
+		<property name="commandName"><value>testBean</value></property>
+        <property name="formView"><value>test</value></property>
+        <property name="successView"><value>test</value></property>
+		<property name="validator" ref="validator"/>
+	</bean>
+
+
+    <bean id="urlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="mappings">
+            <value>
+                /test.html=testController
+            </value>
+        </property>
+        <property name="order" value="0"/>
+	    <!-- 
+	    <property name="interceptors">
+	        <list>
+	           <ref bean="valangInterceptor"/>
+	        </list>
+	    </property> -->
+        
+    </bean>
+    <!-- 
+	<bean id="valangInterceptor" class="org.springmodules.validation.bean.convertor.ValangFromBeanValidatorExportInterceptor">
+	   <property name="valangRulesFromClassAndValidatorsFactory">
+	       <bean class="org.springmodules.validation.bean.convertor.DefaultCachingBeanValidatorValangRuleGenerator" /> 
+	   </property>
+	</bean> -->
+
+    <!-- View Resolver for JSPs -->
+    <bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <property name="requestContextAttribute" value="rc"/>
+        <property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+        <property name="prefix" value="/WEB-INF/pages/"/>
+        <property name="suffix" value=".jsp"/>
+    </bean>
+</beans>
